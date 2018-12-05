@@ -17,9 +17,10 @@ namespace TrashCollector.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Customers
+        // GET: Customer
         public ActionResult Index()
         {
+
             if (User.Identity.IsAuthenticated)
             {
                 var user = User.Identity;
@@ -28,7 +29,7 @@ namespace TrashCollector.Controllers
                 if (IsAdminUser())
                 {
                     ViewBag.displayMenu = "Yes";
-
+                    return View();
                 }
                 return View();
             }
@@ -36,9 +37,8 @@ namespace TrashCollector.Controllers
             {
                 ViewBag.Name = "Not Logged In";
             }
-                return View(db.Customers.ToList());
+                return View();
         }
-
         // GET: Customers/Details/5
         public ActionResult Details(int? id)
         {
@@ -67,6 +67,10 @@ namespace TrashCollector.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Address,DayAvailable,AmountOwed")] Customer customer)
         {
+            string currentUserId = User.Identity.GetUserId();
+
+            customer.ApplicationUserId = currentUserId;
+
             if (ModelState.IsValid)
             {
                 db.Customers.Add(customer);
@@ -142,12 +146,11 @@ namespace TrashCollector.Controllers
             }
             base.Dispose(disposing);
         }
-        public Boolean IsAdminUser()
+        public bool IsAdminUser()
         {
             if (User.Identity.IsAuthenticated)
             {
                 var user = User.Identity;
-                ApplicationDbContext db = new ApplicationDbContext();
                 var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
                 var s = UserManager.GetRoles(user.GetUserId());
                 if (s[0].ToString() == "Admin")
@@ -161,5 +164,6 @@ namespace TrashCollector.Controllers
             }
             return false;
         }
+       
     }
 }

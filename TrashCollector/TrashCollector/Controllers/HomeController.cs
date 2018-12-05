@@ -26,5 +26,10 @@ namespace TrashCollector.Controllers
 
             return View();
         }
+        public ActionResult Pickups()
+        {
+            ViewBag.Message = "Your pick-ups for today";
+            return View();
+        }
     }
 }

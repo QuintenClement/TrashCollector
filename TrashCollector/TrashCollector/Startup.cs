@@ -29,13 +29,13 @@ namespace TrashCollector
                 user.UserName = "Admin";
                 user.Email = "Admin@admin.com";
 
-                string userPWD = "root";
+                string userPWD = "Root1!";
                 var chkUser = UserManager.Create(user, userPWD);
                 if (chkUser.Succeeded)
                 {
                     var result1 = UserManager.AddToRole(user.Id, "Admin");
                 }
-               
+                context.SaveChanges();
             }
             if (!RoleManager.RoleExists("Manager"))
             {
